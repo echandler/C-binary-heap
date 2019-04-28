@@ -52,8 +52,8 @@ int removeTop (struct heap* h){
     A[1] = A[h->idx-1];
 
     while(h->idx != 1 && parent < h->idx/2){
-        int l = parent *2;
-        int r = l + 1;
+        l = parent *2;
+        r = l + 1;
 
         if (r < h->idx && A[l] < A[r]){
             if (A[parent] >= A[r]) break;
