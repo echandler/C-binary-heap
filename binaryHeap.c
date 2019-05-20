@@ -1,25 +1,26 @@
 struct heap {
     int *A;
     int idx;
+    int size;
 };
 
 struct heap* newHeap(int size){
     struct heap *h = malloc(sizeof(struct heap));
-    // Index starts at 1 to make the math in helper fn's easier.. just for this problem.
-    h->idx = 1; 
-    h->A = malloc(sizeof(int)* size);
-
+    h->idx = 0; 
+    h->size = size+1; //Add on because insert() starts at one to make math slightly easier.
+    h->A = malloc(sizeof(int)* h->size);
+    
     return h; 
 } 
 
 void insert(struct heap* h, int num){
     int *A = h->A;
-    int node = h->idx;
+    int node = h->idx+1;
     int parent = node/2;
     
+    h->idx++; // Array starts at 1 to make math slightly easier.
+    
     A[h->idx] = num;
-
-    h->idx++;
     
     while(true){
         if (node == 1){
@@ -41,19 +42,27 @@ void insert(struct heap* h, int num){
 }
 
 int removeTop (struct heap* h){
+    if (h->idx == 0) return 0; 
+    
     int* A = h->A;
     int ret = A[1];
     int parent = 1;
     int l = parent * 2;
     int r = parent * 2 + 1;
-
+     
+    if (h->idx == 1){
+        A[1] = 0;
+        h->idx -= 1;
+        return ret; 
+    }
+    
     if (A[l] == 0 && A[r] == 0) return ret;             
 
-    A[1] = A[h->idx-1];
-
-    while(h->idx != 1 && parent < h->idx/2){
+    A[1] = A[h->idx];
+    
+    while(parent <= (h->idx)/2){
         l = parent *2;
-        r = l + 1;
+        r = l+1;
 
         if (r < h->idx && A[l] < A[r]){
             if (A[parent] >= A[r]) break;
@@ -71,12 +80,13 @@ int removeTop (struct heap* h){
     }
 
     h->idx--;
-
+    
     return ret;
 }
 
-void printHeap(struct heap *h){
-    for (int q = 0; q < 27; q++){
+void printHeap(struct heap *h, int len){
+    for (int q = 0; q < len; q++){
         printf("%d, ", h->A[q]);
     } 
+    printf("\n");
 }
